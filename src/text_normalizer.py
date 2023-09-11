@@ -23,148 +23,50 @@ stopword_list = nltk.corpus.stopwords.words("english")
 
 
 def remove_html_tags(text: str) -> str:
-    """
-    Remove html tags from text like <br/> , etc. You can use BeautifulSoup for this.
-
-    Args:
-        text : str
-            Input string.
-
-    Return:
-        str
-            Output string.
-    """
-    # TODO
-    raise NotImplementedError
+    soup = BeautifulSoup(text, "html.parser")
+    return soup.get_text()
 
 
 def stem_text(text: str) -> str:
-    """
-    Stem input string.
-    (*) Hint:
-        - Use `nltk.porter.PorterStemmer` to pass this test.
-        - Use `nltk.tokenize.word_tokenize` for tokenizing the sentence.
-
-    Args:
-        text : str
-            Input string.
-
-    Return:
-        str
-            Output string.
-    """
-    # TODO
-    raise NotImplementedError
+    stemmer = nltk.porter.PorterStemmer()
+    tokens = word_tokenize(text)
+    stemmed_tokens = [stemmer.stem(token) for token in tokens]
+    return ' '.join(stemmed_tokens)
 
 
 def lemmatize_text(text: str) -> str:
-    """
-    Lemmatize input string, tokenizing first and extracting lemma from each text after.
-    (*) Hint: Use `nlp` (spacy model) defined in the beginning for tokenizing
-    and getting lemmas.
-
-    Args:
-        text : str
-            Input string.
-
-    Return:
-        str
-            Output string.
-    """
-    # TODO
-    raise NotImplementedError
+    doc = nlp(text)
+    lemmatized_tokens = [token.lemma_ for token in doc]
+    return ' '.join(lemmatized_tokens)
 
 
 def remove_accented_chars(text: str) -> str:
-    """
-    Remove accents from input string.
-
-    Args:
-        text : str
-            Input string.
-
-    Return:
-        str
-            Output string.
-    """
-    # TODO
-    raise NotImplementedError
+    text = unicodedata.normalize('NFKD', text).encode('ascii', 'ignore').decode('utf-8', 'ignore')
+    return text
 
 
 def remove_special_chars(text: str, remove_digits: Optional[bool] = False) -> str:
-    """
-    Remove non-alphanumeric characters from input string.
-
-    Args:
-        text : str
-            Input string.
-        remove_digits : bool
-            Remove digits.
-
-    Return:
-        str
-            Output string.
-    """
-    # TODO
-    raise NotImplementedError
+    pattern = r'[^a-zA-z0-9\s]' if not remove_digits else r'[^a-zA-z\s]'
+    return re.sub(pattern, '', text)
 
 
-def remove_stopwords(
-    text: str,
-    is_lower_case: Optional[bool] = False,
-    stopwords: Optional[List[str]] = stopword_list,
-) -> str:
-    """
-    Remove stop words using list from input string.
-    (*) Hint: Use tokenizer (ToktokTokenizer) defined in the beginning for
-    tokenization.
-
-    Args:
-        text : str
-            Input string.
-        is_lower_case : bool
-            Flag for lowercase.
-        stopwords : List[str]
-            Stopword list.
-
-    Return:
-        str
-            Output string.
-    """
-    # TODO
-    raise NotImplementedError
+def remove_stopwords(text: str, is_lower_case: Optional[bool] = False,
+                     stopwords: Optional[List[str]] = stopword_list) -> str:
+    tokens = tokenizer.tokenize(text)
+    tokens = [token.strip() for token in tokens]
+    if is_lower_case:
+        filtered_tokens = [token for token in tokens if token.lower() not in stopwords]
+    else:
+        filtered_tokens = [token for token in tokens if token not in stopwords]
+    return ' '.join(filtered_tokens)
 
 
 def remove_extra_new_lines(text: str) -> str:
-    """
-    Remove extra new lines or tab from input string.
-
-    Args:
-        text : str
-            Input string.
-
-    Return:
-        str
-            Output string.
-    """
-    # TODO
-    raise NotImplementedError
+    return re.sub(r'[\r|\n|\r\n]+', ' ', text)
 
 
 def remove_extra_whitespace(text: str) -> str:
-    """
-    Remove any whitespace from input string.
-
-    Args:
-        text : str
-            Input string.
-
-    Return:
-        str
-            Output string.
-    """
-    # TODO
-    raise NotImplementedError
+    return re.sub(r'\s+', ' ', text).strip()
 
 
 def expand_contractions(text, contraction_mapping=CONTRACTION_MAP) -> str:
@@ -201,17 +103,17 @@ def expand_contractions(text, contraction_mapping=CONTRACTION_MAP) -> str:
 
 
 def normalize_corpus(
-    corpus: List[str],
-    html_stripping: Optional[bool] = True,
-    contraction_expansion: Optional[bool] = True,
-    accented_char_removal: Optional[bool] = True,
-    text_lower_case: Optional[bool] = True,
-    text_stemming: Optional[bool] = False,
-    text_lemmatization: Optional[bool] = False,
-    special_char_removal: Optional[bool] = True,
-    remove_digits: Optional[bool] = True,
-    stopword_removal: Optional[bool] = True,
-    stopwords: Optional[List[str]] = stopword_list,
+        corpus: List[str],
+        html_stripping: Optional[bool] = True,
+        contraction_expansion: Optional[bool] = True,
+        accented_char_removal: Optional[bool] = True,
+        text_lower_case: Optional[bool] = True,
+        text_stemming: Optional[bool] = False,
+        text_lemmatization: Optional[bool] = False,
+        special_char_removal: Optional[bool] = True,
+        remove_digits: Optional[bool] = True,
+        stopword_removal: Optional[bool] = True,
+        stopwords: Optional[List[str]] = stopword_list,
 ) -> List[str]:
     """
     Normalize list of strings (corpus)

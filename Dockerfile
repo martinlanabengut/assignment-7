@@ -15,6 +15,7 @@ RUN apt-get update && \
     curl
 
 # Add a non-root user
+RUN echo "UID: $UID, GID: $GID"
 RUN addgroup --gid $GID app
 RUN adduser --disabled-login --geco '' --uid $UID --gid $GID app
 

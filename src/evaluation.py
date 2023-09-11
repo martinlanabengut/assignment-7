@@ -3,15 +3,23 @@ from typing import List, Optional, Tuple, Union
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import sklearn
 from sklearn import metrics
 from sklearn.base import BaseEstimator
 from sklearn.preprocessing import label_binarize
+from sklearn.metrics import (
+    accuracy_score,
+    precision_score,
+    recall_score,
+    classification_report,
+    confusion_matrix,
+)
 
 
 def get_performance(
-    predictions: Union[List, np.ndarray],
-    y_test: Union[List, np.ndarray],
-    labels: Optional[Union[List, np.ndarray]] = [1, 0],
+        predictions: Union[List, np.ndarray],
+        y_test: Union[List, np.ndarray],
+        labels: Optional[Union[List, np.ndarray]] = ["1", "0"],
 ) -> Tuple[float, float, float, float]:
     """
     Get model performance using different metrics.
@@ -32,19 +40,19 @@ def get_performance(
         f1_score : float
     """
     # TODO: Compute metrics
-    # Use sklearn.metrics.accuracy_score
-    accuracy = ...
-    # Use sklearn.metrics.precision_score
-    precision = ...
-    # Use sklearn.metrics.recall_score
-    recall = ...
-    # Use sklearn.metrics.f1_score
-    f1_score = ...
-    # Use sklearn.metrics.classification_report
-    report = ...
+    # Use sklearn.metrics.accuracy_score
+    accuracy = accuracy_score(y_test, predictions)
+    # Use sklearn.metrics.precision_score
+    precision = precision_score(y_test, predictions)
+    # Use sklearn.metrics.recall_score
+    recall = recall_score(y_test, predictions)
+    # Use sklearn.metrics.f1_score
+    f1_score = sklearn.metrics.f1_score(y_test, predictions)
+    # Use sklearn.metrics.classification_report
+    report = classification_report(y_test, predictions, target_names=labels)
 
     # TODO: Get Confusion Matrix, use sklearn.metrics.confusion_matrix
-    cm = ...
+    cm = confusion_matrix(y_test, predictions)
 
     # Convert Confusion Matrix to pandas DataFrame, don't change this code!
     cm_as_dataframe = pd.DataFrame(data=cm)
@@ -67,7 +75,7 @@ def get_performance(
 
 
 def plot_roc(
-    model: BaseEstimator, y_test: Union[List, np.ndarray], features: np.ndarray
+        model: BaseEstimator, y_test: Union[List, np.ndarray], features: np.ndarray
 ) -> float:
     """
     Plot ROC Curve graph.

@@ -1,12 +1,9 @@
 from typing import List
-
 import numpy as np
 from gensim.models.word2vec import Word2Vec
 
 
-def vectorizer(
-    corpus: List[List[str]], model: Word2Vec, num_features: int = 100
-) -> np.ndarray:
+def vectorizer(corpus: List[List[str]], model: Word2Vec, num_features: int = 100) -> np.ndarray:
     """
     This function takes a list of tokenized text documents (corpus) and a pre-trained
     Word2Vec model as input, and returns a matrix where each row represents the
@@ -27,5 +24,15 @@ def vectorizer(
             A 2D numpy array where each row represents the vectorized form of a
             document in the corpus.
     """
-    # TODO
-    raise NotImplementedError
+
+    # Initialize an empty numpy array
+    corpus_vectors = np.zeros((len(corpus), num_features), dtype="float32")
+
+    for i, tokens in enumerate(corpus):
+        vectors = [model.wv[token] for token in tokens if token in model.wv.key_to_index]
+
+        if vectors:
+            vectors = np.array(vectors)
+            corpus_vectors[i] = vectors.mean(axis=0)
+
+    return corpus_vectors
